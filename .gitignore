@@ -1,4 +1,4 @@
 bin/*
 lib/*
 .env
-pyenv.cfg
+pyvenv.cfg
