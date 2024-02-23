@@ -1,4 +1,2 @@
-bin/*
-lib/*
+venv/*
 .env
-pyvenv.cfg
