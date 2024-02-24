@@ -17,20 +17,28 @@ def parse_retriever_input(params: Dict):
     return params["messages"][-1].content
 
 
-def create_document_chain(file_path):
+def create_docchain_retriever(file_path):
     
     # Load data
     loader = CSVLoader(file_path=file_path)
     data = loader.load()
 
-    # Split data
+    # Split and vectorize data
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
     all_splits = text_splitter.split_documents(data)
 
     # Store vectorized data in a vector db
     vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
 
+    # Create retriever
+    retriever = vectorstore.as_retriever(k=4)
+    
+    # Context for retrieval chain (create every time a user asks a question)
+    #docs = retriever.invoke("how can langsmith help with testing?")
+
+    # Create GPT model
     chat = ChatOpenAI(model="gpt-3.5-turbo-1106")
+
 
     question_answering_prompt = ChatPromptTemplate.from_messages(
         [
@@ -44,14 +52,15 @@ def create_document_chain(file_path):
 
     document_chain = create_stuff_documents_chain(chat, question_answering_prompt)
 
-    return document_chain
+    return document_chain, retriever
 
 
 def create_retrieval_chain(document_chain, retriever):
-    retrieval_chain = RunnablePassthrough.assign(
-    context=parse_retriever_input | retriever,
-    ).assign(
-        answer=document_chain,
+    retrieval_chain = (
+    RunnablePassthrough.assign(
+        context=parse_retriever_input | retriever,
+    )
+    | document_chain
     )
     
     return retrieval_chain
