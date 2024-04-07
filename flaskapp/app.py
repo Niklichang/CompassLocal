@@ -10,6 +10,8 @@ dotenv.load_dotenv()
 # input filepath
 docchain, retriever = create_docchain_retriever('review_sample.csv')
 retrieval_chain = create_retrieval_chain(docchain, retriever)
+
+
 chat_history = create_chat_history()
 # Backend function for processing input
 def backend_process(user_input):
@@ -26,6 +28,13 @@ def process():
     result = backend_process(user_input)
     # Send back the processed result as JSON
     return jsonify({"response": result})
+
+# reset button/ create new chat with new chat history
+@app.route('/reset', methods=['POST'])
+def reset_chat_history():
+    global chat_history
+    chat_history = create_chat_history()  # reset chat history
+    return jsonify({"message": "New chat created"})
 
 if __name__ == '__main__':
     app.run(debug=True)
