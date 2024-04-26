@@ -3,7 +3,8 @@ from langchain.llms import OpenAI
 import dotenv
 from chat import create_docchain_retriever, create_retrieval_chain, reply, create_chat_history
 
-dotenv.load_dotenv()
+#dotenv.load_dotenv()
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 # input filepath
 docchain, retriever = create_docchain_retriever('review_sample.csv')
 retrieval_chain = create_retrieval_chain(docchain, retriever)
