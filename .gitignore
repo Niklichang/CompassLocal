@@ -1,3 +1,5 @@
 venv/*
 .env
 flaskapp/.env
+flaskapp/.streamlit/secrets.toml
+flaskapp/__pycache__
