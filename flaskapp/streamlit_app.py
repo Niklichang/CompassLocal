@@ -4,9 +4,9 @@ import dotenv
 
 # Comment out when local testing:
 
-# __import__('pysqlite3')
-# import sys
-# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 from chat import create_docchain_retriever, create_retrieval_chain, reply, create_chat_history
 
